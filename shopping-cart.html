@@ -6,13 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
         .container .cart {
             width: 300px;
-            margin: 20px auto;
+            margin: auto;
         }
         .container .title {
             background-color: lightblue;
@@ -49,12 +45,13 @@
             height: 45px;
             margin: 5px;
         }
-        /* .container .item .name {
-        position: absolute;
-        width: 90px;
-        top: 0;left: 55px;
-        font-size: 16px;
-        } */
+        .container .item .name {
+            position: absolute;
+            width: 90px;
+            top: 0;
+            left: 55px;
+            font-size: 16px;
+        }
 
         .container .item .change {
             width: 100px;
@@ -64,15 +61,14 @@
         }
         .container .item .change a {
             font-size: 20px;
-            /* width: 30px; */
-            text-decoration:none;
+            text-decoration: none;
             background-color: lightgray;
             vertical-align: middle;
         }
-        /* .container .item .change .num {
-        width: 40px;
-        height: 25px;
-        } */
+        .container .item .change .num {
+            width: 40px;
+            height: 25px;
+        }
         .container .item .del {
             position: absolute;
             top: 0;
@@ -91,84 +87,182 @@
 <body>
     <div id="app">
         <div class="container">
-            <div class="cart">
-                <div class="title">我的商品</div>
-                <div>
-                    <div class="item">
-                        <img src="" alt="a图片">
-                        <div class="name"></div>
-                        <div class="change">
-                            <a href="">+</a>
-                        </div>
-                        <div class="del">x</div>
-                    </div>
-                    <div class="item">
-                        <img src="" alt="b图片">
-                        <div class="name"></div>
-                        <div class="change">
-                            <a href="">+</a>
-                        </div>
-                        <div class="del">x</div>
-                    </div>
-                    <div class="item">
-                        <img src="" alt="c图片">
-                        <div class="name"></div>
-                        <div class="change">
-                            <a href="">+</a>
-                        </div>
-                        <div class="del">x</div>
-                    </div>
-                    <div class="item">
-                        <img src="" alt="d图片">
-                        <div class="name"></div>
-                        <div class="change">
-                            <a href="">+</a>
-                        </div>
-                        <div class="del">x</div>
-                    </div>
-                    <div class="item">
-                        <img src="" alt="e图片">
-                        <div class="name"></div>
-                        <div class="change">
-                            <a href="">+</a>
-                        </div>
-                        <div class="del">x</div>
-                    </div>
-                </div>
-                <div class="total">
-                    <span>总价：123</span>
-                    <button>结算</button>
-                </div>
-            </div>
+            <my-cart></my-cart>
         </div>
+        
     </div>
     <script src="./vue.js"></script>
     <script>
 
         const CartTitle = {
+            props: ['uname'],
             template: `
-
+                <div class="title">{{uname}}的商品</div>
             `
         };
         const CartList = {
+            props: ['list'],
             template: `
-
-            `
+                <div>
+                    <div :key='item.id' class="item" v-for="(item) in list">
+                        <img :src="item.img" :alt="item.name">
+                        <div class="name">{{item.name}}</div>
+                        <div class="change">
+                            <a href="" @click.prevent='sub(item.id)'>－</a>
+                            <input type="text" class="num" :value="item.num" @blur="changeNum(item.id, $event)">
+                            <a href="" @click.prevent='add(item.id)'>＋</a>
+                        </div>
+                        <div class="del" @click='del(item.id)'>×</div>
+                    </div>
+                </div>
+            `,
+            methods: {
+                del: function(id) {
+                    //通过自定义事件把id传递给父组件
+                    this.$emit('cart-del', id);
+                },
+                changeNum: function(id, e) {
+                    this.$emit('change-num', {
+                        id: id,
+                        num: e.target.value,
+                        type: 'change'
+                    });
+                    // console.log(e.target.value)
+                },
+                sub: function(id) {
+                    this.$emit('change-num', {
+                        id: id,
+                        type: 'sub'
+                    });
+                },
+                add: function(id) {
+                    this.$emit('change-num', {
+                        id: id,
+                        type: 'add'
+                    });
+                }
+            }
         };
         const CartTotal = {
+            props: ['list'],
             template: `
-
-            `
+                <div class="total">
+                    <span>总价：{{total}}</span>
+                    <button>结算</button>
+                </div>
+            `,
+            computed: {
+                total: function() {
+                    let t = 0;
+                    this.list.forEach((item) => {
+                        t += item.price * item.num;
+                    })
+                    return t;
+                }
+            }
         };
 
         Vue.component('my-cart', {
+            data: function() {
+                return {
+                    uname: 'muyu',
+                    list: [
+                        {
+                            id: 1,
+                            name: 'a',
+                            price: 1000,
+                            num: 5,
+                            img: ''
+                        },
+                        {
+                            id: 2,
+                            name: 'b',
+                            price: 2000,
+                            num: 4,
+                            img: ''
+                        },
+                        {
+                            id: 3,
+                            name: 'c',
+                            price: 3000,
+                            num: 3,
+                            img: ''
+                        },
+                        {
+                            id: 4,
+                            name: 'd',
+                            price: 4000,
+                            num: 2,
+                            img: ''
+                        },
+                        {
+                            id: 5,
+                            name: 'e',
+                            price: 5000,
+                            num: 1,
+                            img: ''
+                        }
+                    ]
+                }
+            },
             template: `
-            
+                <div class="cart">
+                    <cart-title :uname='uname'></cart-title>
+                    <!--在父组件中监听子组件的自定义事件-->
+                    <cart-list :list='list' @cart-del='delCart($event)' @change-num='changeNum($event)'></cart-list>
+                    <cart-total :list='list'></cart-total>
+                </div>
             `,
             components: {
                 'cart-title': CartTitle,
                 'cart-list': CartList,
                 'cart-total': CartTotal
+            },
+            methods: {
+                delCart: function(id) {
+                    //根据id删除list中对应的数据
+                    //找到id所对应数据的索引
+                    const index = this.list.findIndex((item) => {
+                        return item.id == id;
+                    })
+                    //根据索引删除对应数据
+                    this.list.splice(index, 1);
+                },
+                changeNum: function(val) {
+                    switch(val.type) {
+                        case 'change': {
+                            //根据子组件传递过来是数据，更新list中对应的数据
+                            this.list.some((item) => {
+                                if (item.id == val.id) {
+                                    item.num = val.num;
+                                    return true;
+                                }
+                            })
+                        };break;
+                        case 'sub': {
+                            //根据子组件传递过来是数据，更新list中对应的数据
+                            this.list.some((item) => {
+                                if (item.id == val.id) {
+                                    //不能小于0
+                                    if(item.num != 0){
+                                        item.num--;
+                                    }
+                                    return true;
+                                }
+                            })
+                        };break;
+                        case 'add': {
+                            //根据子组件传递过来是数据，更新list中对应的数据
+                            this.list.some((item) => {
+                                if (item.id == val.id) {
+                                    item.num++;
+                                    return true;
+                                }
+                            })
+                        };break;
+                    }
+                    
+                }
             }
         });
 
