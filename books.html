@@ -175,6 +175,7 @@
                 ]
             },
             methods: {
+                //使用async function, 保证下面的await生效
                 submit: function() {
                     if (this.flag) {
                         //修改
@@ -187,6 +188,17 @@
                                 return true;
                             }
                         });
+
+                        /*替换上面
+                        const ret = await axios.put('books/' +  this.id, {
+                            name: this.name;
+                        });
+                        if(ret.status == 200) {
+                            //重新加载列表数据
+                            this.queryDate();
+                        }
+                        */
+
                         //编号框解禁
                         this.flag = !this.flag;        
                     }
@@ -197,12 +209,24 @@
                         book.name = this.name;
                         book.date = new Date();
                         this.books.push(book);
+
+                        /* 调用后台接口，添加图书
+                        const ret = await axios.post('books', {
+                            name: this.name;
+                        })
+                        if (ret.status == 200) {
+                            //重新加载列表数据
+                            this.queryData();
+                        }
+                        */
                         
                     }
                     //清空表单
                     this.id = '';
                     this.name = '';
                 },
+                
+                //使用async function, 保证下面的await生效
                 del: function(id) {
                     //根据id从数组中查找元素的索引
                     // const index = this.books.findIndex(function(item) {
@@ -215,13 +239,19 @@
                     this.books = this.books.filter(function(item) {
                         return item.id != id;
                     })
+
+                    /* 替换上面，删除图书
+                    const ret = await axios.delete('books/' + id);
+                    if (ret.status == 200) {
+                        //重新加载数据
+                        this.queryData();
+                    }
+                    */
+
                 },
                 toEdit: function(id, name) {
                     //编号禁改
                     this.flag = !this.flag;
-
-                    // console.log(id);
-
                     // this.id = id;
                     // this.name = name;
                     //这种方式，当参数多的时候，不方便，使用下面的方式，只需要传一个参数
@@ -234,6 +264,12 @@
                     //把获取到的数据填充到表单
                     this.id = book[0].id;
                     this.name = book[0].name;
+
+                    /*替换上面，根据id查询对应的图书信息
+                    const ret = await axios.get('books/' + id);
+                    this.id = ret.id;
+                    this.name = ret.name;
+                    */
                 }
                 /*
                 queryData: async function() {
@@ -256,11 +292,18 @@
                 }
             },
             watch: {
+                //加上async function 保证下面的await生效
                 name: function(val) {
                     //验证图书名称是否已经存在
                     const flag = this.books.some(function(item) {
                         return item.name == val;
                     });
+
+                    /* 替换上面的验证图书
+                    const ret = await axios.get('/books/book/' + this.name);
+                    if(ret.status == 1)
+                    */
+
                     if (flag) {
                         //证明图书名称存在
                         //禁用图书按钮
