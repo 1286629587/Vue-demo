@@ -42,26 +42,6 @@
     </style>
 </head>
 <body>
-    <!-- <div id="app">
-        <div>
-            <span>
-                <input type="text" v-model="fname">
-                <button @click="add">添加</button>
-                <button @click="del">删除</button>
-                <button @click="change">替换</button>
-            </span>
-        </div>
-        <ul>
-            <li :key="index" v-for="(item, index) in list">{{item}}</li>
-        </ul>
-        <div>
-            <div>{{info.name}}</div>
-            <div>{{info.age}}</div>
-            <div>{{info.gender}}</div>
-        </div>
-    </div> -->
-    
-    
     <div id="app">
         <div class="grid">
             <h1>图书管理</h1>
@@ -104,39 +84,17 @@
     </div>
     <script src="./vue.js"></script>
     <script>
-        /*
-        const vm = new Vue({
-            el: '#app',
-            data: {
-                fname: '',
-                list: ['a', 'b', 'c'],
-                info: {
-                    name: 'hao',
-                    age: 20
-                }
-            },
-            
-            methods: {
-                add: function() {
-                    this.list.push(this.fname);
-                },
-                del: function() {
-                    this.list.pop(this.fname);
-                },
-                change: function() {
-                    this.list = this.list.slice(0, 2)
-                }
-            }
-        })
-        
-        vm.list[1] = 'd';
-        Vue.set(vm.list, 1, 's');
-        vm.$set(vm.list, 1, 'g');
-
-        vm.info.gender = 'male';
-        vm.$set(vm.info, 'gender', 'male')
+        /*设置基准路径
+        axios.default.baseURL = 'http://localhost:3000/' 后台接口所在文件根目录
         */
-       
+        /* 设置拦截器
+        axios.interceptors.response.use(function(res) {
+            return res.data;
+        }, function(error){
+            console.log(error);
+        });
+        */
+
         //格式化时间
         Vue.filter('format', function(value, arg) {
             function dateFormat(date, format) {
@@ -273,13 +231,23 @@
                         //获取符合条件的数据
                         return item.id == id;
                     });
-
-                    // console.log(book)
-
                     //把获取到的数据填充到表单
                     this.id = book[0].id;
                     this.name = book[0].name;
                 }
+                /*
+                queryData: async function() {
+                    //调用后台接口获取图书列表数据
+                    //const ret = await axios.get('books');
+                    //this.books = ret.data;
+
+
+                    //定义了拦截器，简化了上面的操作
+                    this.books = await axios.get('books');
+
+                }
+                */
+                
             },
             computed: {
                 total: function() {
@@ -316,6 +284,19 @@
             mounted: function() {
                 //该生命周期钩子函数被触发的时候，模板已经可以使用
                 //一般此时用于获取后台数据，然后把数据填充到模板
+
+                /*   books为后台接口所在文件
+                axios.get('books').then((data) => {
+                    console.log(data.data);
+                    this.books = data.data;
+                })
+                */
+
+                /*  简化上面的操作
+                    this.queryData();
+                */
+
+                //模拟后台数据
                 let data = [
                     {
                         id: 1,
