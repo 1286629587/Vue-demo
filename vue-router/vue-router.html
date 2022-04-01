@@ -29,8 +29,8 @@
 
         //定义路由组件
         const User = {
-            props: ['id'],
-            template: '<h1>User 组件 {{id}}</h1>'
+            props: ['id', 'uname', 'age'],
+            template: '<h1>User 组件 用户名为：{{uname}} 年龄为：{{age}}</h1>'
         };
         const Register = {
             template: `
@@ -63,7 +63,14 @@
                 //component表示当前路由规则对应要展示的组件
                 //其中，path表示需要被重定向的原地址，redirect表示将要被重定向到的新地址
                 { path: '/', redirect: '/user' },
-                { path: '/user/:id', component: User, props: true },
+                { 
+                    path: '/user/:id', 
+                    component: User, 
+                    props: {
+                        uname: 'zida',
+                        age: 22
+                    } 
+                },
                 { 
                     path: '/register', 
                     component: Register,
