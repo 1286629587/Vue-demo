@@ -30,7 +30,7 @@
         //定义路由组件
         const User = {
             props: ['id', 'uname', 'age'],
-            template: '<h1>User 组件 用户名为：{{uname}} 年龄为：{{age}}</h1>'
+            template: '<h1>User 组件{{id}} 用户名为：{{uname}} 年龄为：{{age}}</h1>'
         };
         const Register = {
             template: `
@@ -66,10 +66,11 @@
                 { 
                     path: '/user/:id', 
                     component: User, 
-                    props: {
+                    props: (route) => ({
                         uname: 'zida',
-                        age: 22
-                    } 
+                        age: 22,
+                        id: route.params.id
+                    })
                 },
                 { 
                     path: '/register', 
