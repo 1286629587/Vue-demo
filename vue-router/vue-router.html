@@ -17,7 +17,7 @@
         <!-- to属性的值默认会被渲染为#开头的hash地址 -->
         <router-link to="/user/1">User1</router-link>
         <router-link to="/user/2">User2</router-link>
-        <router-link to="/user/3">User3</router-link>
+        <router-link :to="{name: 'user', params: {id: 3}}">User3</router-link>
         <router-link to="/register">Register</router-link>
 
         <!-- 路由填充位，也叫路由占位符 -->
@@ -30,12 +30,23 @@
         //定义路由组件
         const User = {
             props: ['id', 'uname', 'age'],
-            template: '<h1>User 组件{{id}} 用户名为：{{uname}} 年龄为：{{age}}</h1>'
+            template: `
+                <div>
+                    <h1>User 组件{{id}} 用户名为：{{uname}} 年龄为：{{age}}</h1>
+                    <button @click='goRegister'>跳转到注册页面</button>
+                </div>
+            `,
+            methods: {
+                goRegister: function() {
+                    this.$router.push('/register')
+                }
+            }
         };
         const Register = {
             template: `
                 <div>
                     <h1>Register组件</h1>
+                    <button @click='goBack'>后退</button>
                     <hr/>
 
                     <!--子路由链接-->
@@ -45,7 +56,12 @@
                     <!--子路由占位符-->
                     <router-view/>
                 </div>
-            `
+            `,
+            methods: {
+                goBack: function() {
+                    this.$router.go(-1)
+                }
+            }
         };
 
         const Tab1 = {
@@ -63,8 +79,10 @@
                 //component表示当前路由规则对应要展示的组件
                 //其中，path表示需要被重定向的原地址，redirect表示将要被重定向到的新地址
                 { path: '/', redirect: '/user' },
-                { 
-                    path: '/user/:id', 
+                {
+                    //命名路由
+                    name: 'user',  
+                    path: '/user/:id',
                     component: User, 
                     props: (route) => ({
                         uname: 'zida',
