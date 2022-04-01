@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../vue.js"></script>
+    <script src="../vue-router.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            height: 50px;
+            background-color: #545c64;
+            line-height: 50px;
+            text-align: center;
+            font-size: 24px;
+            color: #fff;
+        }
+        .main {
+            display: flex;
+            position: absolute;
+            top: 50px;
+            bottom: 40px;
+            width: 100%;
+        }
+        .main ul {
+            list-style: none;
+        }
+        .main ul li {
+            height: 45px;
+            line-height: 45px;
+            background-color: #a0a0a0;
+            /* color: #fff; */
+            border-bottom: 1px solid #fff;
+            cursor: pointer;
+        }
+        .footer {
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            background-color: #888;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            color: #fff;
+        }
+        .content {
+            flex: 1;
+            text-align: center;
+            /* height: 100%; */
+        }
+        .left {
+            flex: 0 0 20%;
+            background-color: #545c64;
+        }
+        .left a {
+            color: white;
+            text-decoration: none;
+        }
+        .right {
+            margin: 5px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="app">
+        <router-view/>
+    </div>
+    <script>
+
+        
+
+        const App = {
+            template: `
+                <div>
+                    <header class="header">后台管理系统</header>
+                    <section class="main">
+                        <aside class="content left">
+                            <ul>
+                                <li><router-link to="/users">用户管理</router-link></li>
+                                <li><router-link to="/rights">权限管理</router-link></li>
+                                <li><router-link to="/goods">商品管理</router-link></li>
+                                <li><router-link to="/orders">订单管理</router-link></li>
+                                <li><router-link to="/settings">系统设置</router-link></li>
+                            </ul>
+                        </aside>
+                        <aside class="content right">
+                            <router-view />
+                        </aside>
+                    </section>
+                    <footer class="footer">版权信息</footer>
+                </div>
+            `
+        }
+
+        const Users = {
+            template: `
+                <div>
+                    <h3>用户管理区域</h3>
+                </div>
+            `
+        }
+        const Rights = {
+            template: `
+                <div>
+                    <h3>权限管理区域</h3>
+                </div>
+            `
+        }
+        const Goods = {
+            template: `
+                <div>
+                    <h3>商品管理区域</h3>
+                </div>
+            `
+        }
+        const Orders = {
+            template: `
+                <div>
+                    <h3>订单管理区域</h3>
+                </div>
+            `
+        }
+        const Settings = {
+            template: `
+                <div>
+                    <h3>系统设置区域</h3>
+                </div>
+            `
+        }
+
+        const router = new VueRouter({
+            routes: [
+                { 
+                    path: '/', 
+                    component: App,
+                    redirect: '/users',
+                    children: [
+                        { path: '/users', component: Users },
+                        { path: '/rights', component: Rights },
+                        { path: '/goods', component: Goods },
+                        { path: '/orders', component: Orders },
+                        { path: '/settings', component: Settings }
+                    ]
+                }
+            ]
+        })
+
+        const vm = new Vue({
+            el: '#app',
+            router
+        })
+    </script>
+</body>
+</html>
